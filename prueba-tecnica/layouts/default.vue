@@ -1,117 +1,82 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
-    </v-app-bar>
-    <v-main>
-      <v-container>
-        <nuxt />
-      </v-container>
-    </v-main>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer
-      :absolute="!fixed"
-      app
-    >
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
+  <v-app background="../static/images/FondoIndex.png">
+    <v-container>
+      <v-layout row class="text-xs-center">
+        <v-flex xs4 sm6>
+          <v-container
+            style="position: relative; left: 50%"
+            class="justify-center"
+          >
+            <br />
+            <center class="white--text">
+              <h1>GESTIÓN U&P</h1>
+              <h4>Gestión de ususarios y personal</h4>
+            </center>
+            <br />
+            <v-card flat>
+              <v-card-title primary-title class="justify-center">
+                <h4>Inicio de Sesión</h4>
+              </v-card-title>
+              <v-form class="pa-3 pt-3" lazy-validation color="#ccf2f4">
+                <v-text-field
+                  name="user"
+                  label="Nro de Identificación"
+                  :rules="rules.required"
+                  required
+                  ><v-icon> mdi-account </v-icon>
+                </v-text-field>
+                <v-text-field
+                  name="password"
+                  label="Contraseña"
+                  type="password"
+                  :rules="rules.required"
+                  required
+                ></v-text-field>
+                <v-select :items="items" label="Rol"></v-select>
+
+                <v-card-actions class="justify-center">
+                  <v-btn primary large block class="white--text" color="#06d6a0"
+                    >Ingresar</v-btn
+                  >
+                </v-card-actions>
+                <center>
+                  <div class="primary--text">
+                    <a href="/recuperar-clave">¿Has olvidado tu contraseña?</a>
+                  </div>
+                  <div>
+                    ¿No tienes una cuenta?
+                    <span class="primary--text mx-1"
+                      ><a href="/Registro">Registrate aquí</a></span
+                    >
+                  </div>
+                </center>
+              </v-form>
+            </v-card>
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-container>
   </v-app>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
-        }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
-    }
-  }
-}
+  data: () => ({
+    items: ["Foo", "Bar", "Fizz", "Buzz"],
+    rules: {
+      required: [(v) => !!v || "El campo es obligatorio"],
+    },
+    emailRules: [
+      (v) => !!v || "El correo es obligatorio",
+      (v) => /.+@.+\..+/.test(v) || "El correo no es valido",
+    ],
+  }),
+};
 </script>
+
+<style>
+#app {
+  background: url("../static/images/FondoIndex.png") no-repeat center fixed !important;
+  background-size: cover;
+}
+</style>
