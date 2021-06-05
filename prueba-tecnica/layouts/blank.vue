@@ -8,6 +8,9 @@
 
 <script>
 export default {
+  beforeMount() {
+    localStorage.clear();
+  },
 };
 </script>
 
