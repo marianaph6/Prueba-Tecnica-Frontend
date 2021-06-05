@@ -1,5 +1,5 @@
 <template>
-  <v-app background="../static/images/FondoIndex.png">
+  <v-app>
     <v-container>
       <v-layout row class="text-xs-center">
         <v-flex xs4 sm6>
@@ -125,8 +125,5 @@ export default {
 </script>
 
 <style>
-#app {
-  background: url("../static/images/FondoIndex.png") no-repeat center fixed !important;
-  background-size: cover;
-}
+
 </style>

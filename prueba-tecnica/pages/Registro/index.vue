@@ -1,14 +1,14 @@
 <template>
   <v-container>
-    <login />
+    <registro />
   </v-container>
 </template>
 
 <script>
-import login from "@/components/Login";
+import registro from "@/components/Registro";
 export default {
   components: {
-    login,
+    registro,
   },
 };
 </script>
