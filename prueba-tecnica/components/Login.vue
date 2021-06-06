@@ -29,7 +29,7 @@
                   label="Nro de Identificación"
                   :rules="rules.required"
                   required
-                  v-model="usuario.id"
+                  v-model="usuario.id_usuario"
                   ><v-icon> mdi-account </v-icon>
                 </v-text-field>
                 <v-text-field
@@ -40,13 +40,6 @@
                   :rules="rules.required"
                   required
                 ></v-text-field>
-                <v-select
-                  :items="roles"
-                  label="Rol"
-                  v-model="usuario.rol"
-                  :rules="rules.required"
-                >
-                </v-select>
 
                 <v-card-actions class="justify-center">
                   <v-btn
@@ -80,20 +73,16 @@
 </template>
 
 <script>
-const url_roles = "http://localhost:3001/roles/";
-const url_usuarios = "http://localhost:3001/usuarios/";
+const url_roles = "http://localhost:3002/roles/";
+const url_usuarios = "http://localhost:3001/login";
 export default {
   beforeMount() {
-    this.getRoles();
+    //this.getRoles();
   },
   data: () => ({
     valid: true,
     roles: [],
-    usuario: {
-      id: "",
-      contrasenia: "",
-      rol: "",
-    },
+    usuario: {},
     rules: {
       required: [(v) => !!v || "El campo es obligatorio"],
     },
@@ -117,31 +106,24 @@ export default {
     async login() {
       try {
         if (this.$refs.formLogin.validate()) {
-          let id_rol = 0;
           let url = "";
-          if (this.usuario.rol == "Usuario") {
-            id_rol = 1;
-            url = "Usuario/userHome";
-          } else if (this.usuario.rol == "Coordinador") {
-            id_rol = 2;
-            url = "Coordinador/coordHome";
-          } else if (this.usuario.rol == "Administrador") {
-            id_rol = 3;
-            url = "Administrador/adminHome";
-          }
-          let response = await this.$axios.get(url_usuarios);
-          let users = response.data;
-          let findUser = users.find((x) => {
-            return (
-              x.id === this.usuario.id &&
-              x.contrasenia === this.usuario.contrasenia &&
-              x.tipo_rol === id_rol
-            );
-          });
-          if (findUser) {
-            delete findUser.password;
-              localStorage.setItem("user-in",JSON.stringify(findUser));
-              this.$router.push(url);
+          let response = await this.$axios.post(url_usuarios,this.usuario);
+          console.log(response.data);
+          let info = response.data;
+          
+          if (info.ok == true) {
+            let rol = info.content.rol;
+            let nombres = info.content.nombres;
+            let token = info.content.token;
+            localStorage.setItem("token", token);
+            localStorage.setItem("user-in", JSON.stringify({ rol, nombres }));
+            if (rol == 1) {
+              this.$router.push("Usuario/userHome");
+            } else if (rol == 2) {
+              this.$router.push("Coordinador/coorHome");
+            } else if (rol == 3) {
+              this.$router.push("Administrador/adminHome");
+            }
           } else {
             this.$swal.fire({
               type: "error",

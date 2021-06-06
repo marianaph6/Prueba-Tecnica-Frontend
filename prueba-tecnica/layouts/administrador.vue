@@ -81,6 +81,8 @@
 export default {
   beforeMount() {
     this.loadUser();
+    let token = localStorage.getItem("token");
+    this.$axios.setHeader("token", token);
   },
   data() {
     return {
@@ -111,7 +113,7 @@ export default {
       this.validRol(this.user);
     },
     validRol(user) {
-      if (!user || user.tipo_rol != 3) {
+      if (!user || user.rol != 3) {
         this.$router.push("/");
       }
     },
