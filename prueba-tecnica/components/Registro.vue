@@ -78,8 +78,8 @@
                 <v-text-field
                   name="user"
                   label="Correo"
-                  :rules="rules.required"
                   required
+                  :rules="emailRules"
                   v-model="usuario.correo"
                 >
                 </v-text-field>
@@ -156,7 +156,7 @@ export default {
       contrasenia: "",
       confirmacion: "",
     },
-    perfil: null,
+    perfil: "",
 
     rules: {
       required: [(v) => !!v || "El campo es obligatorio"],
@@ -201,12 +201,6 @@ export default {
       return val;
     },
 
-    /*             this.usuario = "";
-        if (this.perfil == "") {
-          this.$router.push("/");
-        } else {
-          this.$router.push("adminHome");
-        } */
     async agregarUsuario() {
       if (this.$refs.formRegistro.validate()) {
         let user = Object.assign({}, this.usuario);

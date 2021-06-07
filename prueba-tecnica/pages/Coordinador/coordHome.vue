@@ -19,14 +19,12 @@
         class="elevation-1"
       >
         <template v-slot:top>
+        
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" @click="editUsuario(item)">
             mdi-pencil
           </v-icon>
-        </template>
-        <template v-slot:no-data>
-          <v-btn color="primary"> Reset </v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -38,6 +36,8 @@ const url_usuarios = "http://localhost:3001/usuarios/";
 export default {
   layout: "coordinador",
   beforeMount() {
+    let token = localStorage.getItem("token");
+    this.$axios.setHeader("token", token);
     this.getUsuarios();
   },
   data: () => ({
@@ -47,12 +47,12 @@ export default {
     dialogDelete: false,
     headers: [
       {
-        text: "Id",
+        text: "Tipo id",
         align: "start",
         sortable: false,
-        value: "id",
+        value: "id_tipo_id",
       },
-      { text: "Tipo id", value: "tipo_id" },
+      { text: "Id Usuario", value: "id_usuario" },
       { text: "Nombres", value: "nombres" },
       { text: "Apellidos", value: "apellidos" },
       { text: "Correo", value: "correo" },
@@ -66,13 +66,13 @@ export default {
     async getUsuarios() {
       try {
         let response = await this.$axios.get(url_usuarios);
-        this.usuarios = response.data;
+        this.usuarios = response.data.content;
       } catch (error) {
         console.error(error);
       }
     },
     editUsuario(item) {
-      localStorage.setItem("usuario-editar", JSON.stringify(item));
+      localStorage.setItem("usuario-editar", JSON.stringify(item.id_usuario));
       this.$router.push('coordEdit');
     },
 

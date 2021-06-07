@@ -83,37 +83,6 @@ export default {
         .fire({
           type: "warning",
           title: "¿Está seguro de eliminar el usuario?",
-          text: "Al borrar el usuario este se prodrá recuperar.",
-          allowEscapeKey: false,
-          allowOutsideClick: false,
-          showCancelButton: true,
-        })
-        .then(async (result) => {
-          if (result.value) {
-            try {
-              let url = url_usuarios + item.id;
-              await this.$axios.delete(url);
-              this.$swal.fire({
-                type: "success",
-                title: "Operación exitosa.",
-                text: "El usuario se eliminó correctamente.",
-              });
-              this.getUsuarios();
-            } catch (error) {
-              this.$swal.fire({
-                type: "error",
-                title: "Ha ocurrido un problema al eliminar el usuario",
-                text: error.toString(),
-              });
-            }
-          }
-        });
-    },
-    deleteUsuario(item) {
-      this.$swal
-        .fire({
-          type: "warning",
-          title: "¿Está seguro de eliminar el usuario?",
           text: "Al borrar el usuario no se prodrá recuperar.",
           allowEscapeKey: false,
           allowOutsideClick: false,
@@ -147,6 +116,10 @@ export default {
             }
           }
         });
+    },
+    editUsuario(item) {
+      localStorage.setItem("usuario-editar", JSON.stringify(item.id_usuario));
+      this.$router.push('adminEdit');
     },
     agregarUsuario() {
       this.$router.push("adminNewUser");

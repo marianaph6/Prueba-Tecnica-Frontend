@@ -10,34 +10,52 @@
     <v-card-text>
       <v-container>
         <v-form
+          class="pa-3 pt-3"
           lazy-validation
           color="#ccf2f4"
           v-model="valid"
           azy-validation
-          ref="formEditar"
+          ref="formUpdate"
         >
           <v-row>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6">
               <v-select
                 :rules="rules.required"
                 required
                 :items="tipos_id"
                 label="Tipo de identificación"
-                v-model="usuario.tipo_id"
+                v-model="usuario.id_tipo_id"
+                item-text="nombre"
+                item-value="id_tipo_id"
+                
               ></v-select>
             </v-col>
-
-            <v-col cols="12" sm="8" md="4">
+            <v-col cols="12" sm="6">
               <v-text-field
                 name="user"
                 label="Nro de Identificación"
                 :rules="rules.required"
                 required
-                v-model="usuario.id"
+                v-model="usuario.id_usuario"
+                filled
+                readonly
               >
               </v-text-field>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+          </v-row>
+          <v-col cols="12" sm="12">
+            <v-select
+              :rules="rules.required"
+              required
+              :items="tipos_rol"
+              label="Tipo de rol"
+              v-model="usuario.id_rol"
+              item-text="nombre"
+              item-value="id_rol"
+            ></v-select>
+          </v-col>
+          <v-row>
+            <v-col cols="12" sm="6">
               <v-text-field
                 name="user"
                 label="Nombres"
@@ -47,7 +65,7 @@
               >
               </v-text-field>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6">
               <v-text-field
                 name="user"
                 label="Apellidos"
@@ -57,17 +75,17 @@
               >
               </v-text-field>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
-              <v-text-field
-                name="user"
-                label="Correo"
-                :rules="rules.required"
-                required
-                v-model="usuario.correo"
-              >
-              </v-text-field>
-            </v-col>
-            <v-col cols="12" sm="6" md="4">
+          </v-row>
+          <v-text-field
+            name="user"
+            label="Correo"
+            :rules="emailRules"
+            required
+            v-model="usuario.correo"
+          >
+          </v-text-field>
+          <v-row>
+            <v-col cols="12" sm="6">
               <v-text-field
                 name="user"
                 label="Celular"
@@ -77,14 +95,31 @@
               >
               </v-text-field>
             </v-col>
+
+            <v-col cols="12" sm="6">
+              <v-text-field
+                name="password"
+                label="Contraseña"
+                type="password"
+                :rules="rules.required"
+                required
+                v-model="usuario.contrasenia"
+              ></v-text-field>
+            </v-col>
           </v-row>
-          <v-btn
-                class="white--text"
-                color="#06d6a0"
-                @click="updateUsuario()"
-              >
-                Actualizar Usuario
-              </v-btn>
+
+          <v-card-actions class="justify-center">
+            <v-btn
+              primary
+              large
+              block
+              class="white--text"
+              color="#06d6a0"
+              @click="updateUsuario()"
+            >
+              Actualizar</v-btn
+            >
+          </v-card-actions>
         </v-form>
       </v-container>
     </v-card-text>
@@ -92,33 +127,22 @@
 </template>
 
 <script>
-const url_usuarios = "http://localhost:3001/usuarios/";
 const url_tipos_id = "http://localhost:3001/tipos_id/";
+const url_tipos_rol = "http://localhost:3001/roles/";
+const url_usuarios = "http://localhost:3001/usuarios/";
 export default {
-  layout: "administrador",
-  async asyncData({ params }) {
-    let id_user = params.id;
-    return { id_user };
-  },
   beforeMount() {
     this.loadUser();
     this.getTipos_id();
+    this.getTipos_Rol();
   },
   data: () => ({
     valid: true,
+    perfil: 0,
     usuario: {},
-    perfil:null,
     tipos_id: [],
-    Campos_usuario: {
-      id: "",
-      tipo_id: "",
-      nombres: "",
-      apellidos: "",
-      correo: "",
-      tipo_rol: 1,
-      celular: "",
-      contrasenia: "",
-    },
+    tipos_rol: [],
+    id_usuario: 0,
 
     rules: {
       required: [(v) => !!v || "El campo es obligatorio"],
@@ -134,43 +158,83 @@ export default {
     },
     loadUser() {
       let stringUser = localStorage.getItem("usuario-editar");
-      this.usuario = JSON.parse(stringUser);
+      this.id_usuario = JSON.parse(stringUser);
+      console.log("" + this.id_usuario);
+      this.getUsuario();
 
       let stringPerfil = localStorage.getItem("user-in");
-      this.perfil = JSON.parse(stringPerfil);
-      console.log(""+ this.perfil.tipo_rol)
+      let id = JSON.parse(stringPerfil);
+      this.perfil = id.rol;
+      console.log("" + this.perfil);
     },
     async getTipos_id() {
       try {
         let response = await this.$axios.get(url_tipos_id);
-        this.tipo = response.data;
-        for (var i of this.tipo) {
-          this.tipos_id.push(i.nombre);
-        }
+        this.tipos_id = response.data.content;
       } catch (error) {
+        this.tipos_id = [];
         console.error(error);
       }
     },
+    async getTipos_Rol() {
+      try {
+        let response = await this.$axios.get(url_tipos_rol);
+        this.tipos_rol = response.data.content;
+      } catch (error) {
+        this.tipos_rol = [];
+        console.error(error);
+      }
+    },
+    async getUsuario() {
+      try {
+        let { data } = await this.$axios.get(url_usuarios + this.id_usuario);
+        this.usuario = data.content;
+      } catch (error) {
+        this.$swal
+          .fire({
+            type: "error",
+            title: "Oops...",
+            text: "El usuario no existe o hubo un error cargandolo.",
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+          })
+          .then((result) => {
+            if (result.value) {
+              if (this.perfil == 2) {
+                this.$router.push("coordHome");
+              }
+              if (this.perfil == 3) {
+                this.$router.push("adminHome");
+              }
+            }
+          });
+      }
+    },
+
     async updateUsuario() {
-      if (this.$refs.formEditar.validate()) {
-        let usuario = Object.assign({}, this.usuario);
-        let response = await this.$axios.put(
-          url_usuarios + this.usuario.id,
-          usuario
-        );
-        this.$swal.fire({
-          type: "success",
-          title: "Operación exitosa.",
-          text: "La información del usuario se actualizo correctamente.",
-        });
-        localStorage.setItem("usuario-editar", "");
-        if (this.perfil.tipo_rol==2){
+      if (this.$refs.formUpdate.validate()) {
+        let user = Object.assign({}, this.usuario);
+        let { data } = await this.$axios.put(
+          url_usuarios + this.id_usuario,user);
+        if (data.ok == true) {
+          this.$swal.fire({
+            type: "success",
+            title: "Operación exitosa.",
+            text: "El perfil del usuario se actualizó correctamente.",
+          });
+          if (this.perfil == 2) {
             this.$router.push("coordHome");
-        }
-        if (this.perfil.tipo_rol==3){
+          }
+          if (this.perfil == 3) {
             this.$router.push("adminHome");
+          }
+        } else {
+          this.$swal.fire({
+            type: "error",
+            title: "Error al modificar el perfil del usuario.",
+            text: data.message,
+          });
         }
-        
       } else {
         this.$swal.fire({
           type: "warning",
@@ -179,7 +243,6 @@ export default {
         });
       }
     },
-
   },
 };
 </script>

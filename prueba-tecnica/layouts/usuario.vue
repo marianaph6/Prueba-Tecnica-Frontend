@@ -80,9 +80,14 @@
 </template>
 
 <script>
+import { auth } from "@/mixins/auth";
 export default {
+  mixins: [auth],
   beforeMount() {
+    let token = localStorage.getItem("token");
+    this.$axios.setHeader("token", token);
     this.loadUser();
+    this.verifyToken();
   },
   data() {
     return {
@@ -107,7 +112,7 @@ export default {
       this.validRol(this.user);
     },
     validRol(user) {
-      if (!user || user.tipo_rol != 1) {
+      if (!user || user.rol != 1) {
         this.$router.push("/");
       }
     },

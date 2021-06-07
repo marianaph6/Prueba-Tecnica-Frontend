@@ -23,6 +23,7 @@
                 lazy-validation
                 color="#ccf2f4"
                 ref="formLogin"
+                
               >
                 <v-text-field
                   name="user"
@@ -30,6 +31,8 @@
                   :rules="rules.required"
                   required
                   v-model="usuario.id_usuario"
+                  type="number"
+                  class="inputPrice"
                   ><v-icon> mdi-account </v-icon>
                 </v-text-field>
                 <v-text-field
@@ -114,13 +117,14 @@ export default {
           if (info.ok == true) {
             let rol = info.content.rol;
             let nombres = info.content.nombres;
+            let id= info.content.id;
             let token = info.content.token;
             localStorage.setItem("token", token);
-            localStorage.setItem("user-in", JSON.stringify({ rol, nombres }));
+            localStorage.setItem("user-in", JSON.stringify({ rol, nombres,id }));
             if (rol == 1) {
               this.$router.push("Usuario/userHome");
             } else if (rol == 2) {
-              this.$router.push("Coordinador/coorHome");
+              this.$router.push("Coordinador/coordHome");
             } else if (rol == 3) {
               this.$router.push("Administrador/adminHome");
             }
