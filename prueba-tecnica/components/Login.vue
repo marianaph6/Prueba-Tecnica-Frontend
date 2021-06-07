@@ -50,7 +50,7 @@
                     large
                     block
                     class="white--text"
-                    color="#06d6a0"
+                    color=#26bb8f
                     @click="login()"
                     >Ingresar</v-btn
                   >

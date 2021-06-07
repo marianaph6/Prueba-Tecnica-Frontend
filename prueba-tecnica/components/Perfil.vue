@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-toolbar color="#c6ce00">
+    <v-toolbar color="#d2d178">
       <v-card-title>
         Ficha de perfil
         <v-spacer> </v-spacer>

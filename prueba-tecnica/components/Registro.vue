@@ -42,17 +42,20 @@
                     </v-text-field>
                   </v-col>
                 </v-row>
-                <v-col cols="12" sm="12">
-                  <v-select
-                    :rules="rules.required"
-                    required
-                    :items="tipos_rol"
-                    label="Tipo de rol"
-                    v-model="usuario.id_rol"
-                    item-text="nombre"
-                    item-value="id_rol"
-                  ></v-select>
-                </v-col>
+                <div v-if="perfil.rol != 0">
+                  <v-col cols="12" sm="12">
+                    <v-select
+                      :rules="rules.required"
+                      required
+                      :items="tipos_rol"
+                      label="Tipo de rol"
+                      v-model="usuario.id_rol"
+                      item-text="nombre"
+                      item-value="id_rol"
+                    ></v-select>
+                  </v-col>
+                </div>
+
                 <v-row>
                   <v-col cols="12" sm="6">
                     <v-text-field
@@ -93,24 +96,17 @@
                 </v-text-field>
 
                 <v-row>
-                  <v-col cols="12" sm="6">
+                  <v-col cols="12" sm="">
                     <v-text-field
                       name="password"
                       label="Contraseña"
-                      type="password"
                       :rules="rules.required"
                       required
                       v-model="usuario.contrasenia"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <v-text-field
-                      name="password"
-                      label="Confirmar Contraseña"
-                      type="password"
-                      :rules="rules.required"
-                      required
-                      v-model="Password.confirmacion"
+                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="show1 ? 'text' : 'password'"
+                      counter
+                      @click:append="show1 = !show1"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -121,7 +117,7 @@
                     large
                     block
                     class="white--text"
-                    color="#06d6a0"
+                    color="#26bb8f"
                     @click="agregarUsuario()"
                   >
                     Registrar</v-btn
@@ -143,20 +139,18 @@ const url_tipos_rol = "http://localhost:3001/roles/";
 const url_usuarios = "http://localhost:3001/usuarios/";
 export default {
   beforeMount() {
+    this.loadUser();
     this.getTipos_id();
     this.getTipos_Rol();
-    this.loadUser();
   },
   data: () => ({
+    show1: false,
     valid: true,
     tipos_id: [],
     usuario: [],
     tipos_rol: [],
-    Password: {
-      contrasenia: "",
-      confirmacion: "",
-    },
-    perfil: "",
+    Pass: {},
+    perfil: {},
 
     rules: {
       required: [(v) => !!v || "El campo es obligatorio"],
@@ -168,12 +162,9 @@ export default {
   }),
   methods: {
     loadUser() {
-      let stringPerfil = localStorage.getItem("user-in");
-      if (stringPerfil != "") {
-        this.perfil = JSON.parse(stringPerfil);
-      } else {
-        this.perfil = "";
-      }
+      let stringUser = localStorage.getItem("user-in");
+      this.perfil = JSON.parse(stringUser);
+      console.log(this.perfil.rol);
     },
     async getTipos_id() {
       try {
@@ -193,16 +184,12 @@ export default {
         console.error(error);
       }
     },
-    validarPassword() {
-      let val = false;
-      if (this.Password.contrasenia == this.Password.confirmacion) {
-        val = true;
-      }
-      return val;
-    },
 
     async agregarUsuario() {
-      if (this.$refs.formRegistro.validate()) {
+      if (this.perfil.rol == 0) {
+        this.usuario.id_rol = "1";
+      }
+      if (this.$refs.formRegistro.validate() || this.perfil != 0) {
         let user = Object.assign({}, this.usuario);
         let response = await this.$axios.post(url_usuarios, user);
         if (response.data.ok == true) {
@@ -212,7 +199,7 @@ export default {
             text: "El usuario se agregó correctamente.",
           });
           this.usuario = "";
-          if (this.perfil == "") {
+          if (this.perfil.rol == 0) {
             this.$router.push("/");
           } else {
             this.$router.push("adminHome");

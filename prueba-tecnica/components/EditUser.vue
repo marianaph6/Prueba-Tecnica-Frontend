@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-toolbar color="#c6ce00">
+    <v-toolbar color="#d2d178">
       <v-card-title>
         Editar perfil de usuario
         <v-spacer> </v-spacer>
@@ -114,7 +114,7 @@
               large
               block
               class="white--text"
-              color="#06d6a0"
+              color=#26bb8f
               @click="updateUsuario()"
             >
               Actualizar</v-btn

@@ -16,7 +16,10 @@ export default {
     login,
   },
   beforeMount(){
-    localStorage.setItem("user-in",JSON.stringify(""));
+    let rol=0;
+    let nombres="";
+    let id="0";
+    localStorage.setItem("user-in", JSON.stringify({ rol, nombres,id }));
   },
   data(){
     return{

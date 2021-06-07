@@ -28,13 +28,12 @@
       </template>
     </v-navigation-drawer>
 
-    <!-- Barra de navegación superior -->
-    <v-app-bar fixed app color="#06d6a0">
-      <!-- Icono que controla el menú hamburguesa -->
+
+    <v-app-bar fixed app color=#26bb8f>
       <v-app-bar-nav-icon @click.stop="openMenu = !openMenu" />
       <v-toolbar-title class="flex text-center">Usuario</v-toolbar-title>
 
-      <v-dialog v-model="dialog" persistent max-width="290">
+      <v-dialog v-model="dialog" persistent max-width="350">
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon dark v-bind="attrs" v-on="on">
             <v-icon>mdi-help</v-icon>
@@ -42,18 +41,17 @@
         </template>
         <v-card>
           <v-card-title class="text-h5">
-            Use Google's location service?
+            Que puedes hacer con tu rol de usuario?
           </v-card-title>
           <v-card-text
-            >Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are
-            running.</v-card-text
+            >Como usuario vas a poder registrarte en el sistema y tambien vas a poder 
+            tener una vista de la ficha de tu perfi</v-card-text
           >
           <v-card-actions>
             <v-spacer></v-spacer>
 
             <v-btn color="green darken-1" text @click="dialog = false">
-              Agree
+              Cerrar
             </v-btn>
           </v-card-actions>
         </v-card>
