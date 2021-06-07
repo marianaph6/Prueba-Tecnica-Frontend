@@ -56,9 +56,7 @@
                   >
                 </v-card-actions>
                 <center>
-                  <div class="primary--text">
-                    <a href="/recuperar-clave">¿Has olvidado tu contraseña?</a>
-                  </div>
+                  
                   <div>
                     ¿No tienes una cuenta?
                     <span class="primary--text mx-1"

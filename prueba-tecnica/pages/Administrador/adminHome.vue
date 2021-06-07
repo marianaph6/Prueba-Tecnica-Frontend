@@ -20,7 +20,7 @@
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-btn color="primary" dark class="mb-2" @click="agregarUsuario">
+            <v-btn color="#d2d178" dark class="mb-2" @click="agregarUsuario">
               Nuevo usuario
             </v-btn>
             <v-divider class="mx-4" inset vertical></v-divider>
